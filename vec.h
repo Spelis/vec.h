@@ -24,6 +24,10 @@
 			v->data[j] = v->data[j + 1];                                       \
 		}                                                                      \
 		v->count--;                                                            \
+		if (v->count < v->capacity / 3 && v->capacity > 256) {                 \
+			v->capacity /= 2;                                                  \
+			v->data = realloc(v->data, v->capacity * sizeof(*v->data));        \
+		}                                                                      \
 	}                                                                          \
 	static inline type vec_at_##name(name* v, size_t i) { return v->data[i]; } \
 	static inline void vec_free_##name(name* v) {                              \

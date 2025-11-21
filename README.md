@@ -8,7 +8,7 @@ It allows you to create vectors for any type, including signed or unsigned integ
 ## Features
 
 * Type-safe vectors for any C type
-* Dynamic resizing
+* Dynamic growing and shrinking
 * Push, delete, and access elements safely
 * Lightweight and header only
 
