@@ -31,8 +31,8 @@ No compilation or linking needed; it is completely inline.
 1. Define a vector type
 ```c
 NEW_VEC_TYPE(int, IntVec, 16) // Defines a vector of ints named IntVec
-NEW_VEC_TYPE(int, IntVec, 16) // Defines a vector of floats
-NEW_VEC_TYPE(int, IntVec, 8) // Defines a vector of strings (char*) (needs to individually free each element before freeing the entire vector)
+NEW_VEC_TYPE(float, FloatVec, 16) // Defines a vector of floats
+NEW_VEC_TYPE(char*, StringVec, 8) // Defines a vector of strings (char*) (needs to individually free each element before freeing the entire vector)
 NEW_VEC_TYPE(TYPE, NAME, MIN_CAP) // Defines a vector of TYPE named NAME with minimum capacity MIN_CAP
 ```
 The first parameter is the element type, the second is the vector name.
