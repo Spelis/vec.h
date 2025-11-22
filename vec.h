@@ -73,6 +73,10 @@
 		}                                                                     \
 		return v->data[i];                                                    \
 	}                                                                         \
+	static inline type vec_at_or_default_##name(name* v, size_t i, type d) {  \
+		if (i >= v->count) return d;                                          \
+		return v->data[i];                                                    \
+	}                                                                         \
 	static inline type vec_front_##name(name* v) {                            \
 		if (v->count == 0) {                                                  \
 			fprintf(stderr, "vec_front: empty vector\n");                     \
@@ -114,3 +118,58 @@
 		v->min_cap = init_capacity;                                           \
 		if (v->min_cap <= 0) v->min_cap = 1;                                  \
 	}
+
+#ifdef VEC_MAP
+
+#define NEW_MAP_TYPE(ktype, vtype, name, init_capacity)                  \
+	NEW_VEC_TYPE(ktype, __##name##_KEY_VEC, init_capacity);              \
+	NEW_VEC_TYPE(vtype, __##name##_VALUE_VEC, init_capacity);            \
+	typedef struct name {                                                \
+		__##name##_KEY_VEC keys;                                         \
+		__##name##_VALUE_VEC values;                                     \
+	} name;                                                              \
+	static inline void map_set_##name(name* m, ktype key, vtype value) { \
+		ssize_t key_index = vec_find___##name##_KEY_VEC(&m->keys, key);  \
+		if (key_index == -1) {                                           \
+			vec_append___##name##_KEY_VEC(&m->keys, key);                \
+			vec_append___##name##_VALUE_VEC(&m->values, value);          \
+		} else {                                                         \
+			m->values.data[key_index] = value;                           \
+		}                                                                \
+	}                                                                    \
+	static inline vtype map_get_##name(name* m, ktype key) {             \
+		ssize_t key_index = vec_find___##name##_KEY_VEC(&m->keys, key);  \
+		if (key_index == -1) {                                           \
+			fprintf(stderr, "map_get: key not found\n");                 \
+			exit(EXIT_FAILURE);                                          \
+		}                                                                \
+		return m->values.data[key_index];                                \
+	}                                                                    \
+	static inline vtype map_get_or_default_##name(name* m, ktype key,    \
+												  vtype d) {             \
+		ssize_t key_index = vec_find___##name##_KEY_VEC(&m->keys, key);  \
+		if (key_index == -1) return d;                                   \
+		return m->values.data[key_index];                                \
+	}                                                                    \
+	static inline unsigned int map_contains_##name(name* m, ktype key) { \
+		return vec_find___##name##_KEY_VEC(&m->keys, key) >= 0;          \
+	}                                                                    \
+	static inline void map_del_##name(name* m, ktype key) {              \
+		ssize_t key_index = vec_find___##name##_KEY_VEC(&m->keys, key);  \
+		vec_udelete___##name##_KEY_VEC(&m->keys, key_index);             \
+		vec_udelete___##name##_VALUE_VEC(&m->values, key_index);         \
+	}                                                                    \
+	static inline void map_shrink_##name(name* m) {                      \
+		vec_shrink___##name##_KEY_VEC(&m->keys);                         \
+		vec_shrink___##name##_VALUE_VEC(&m->values);                     \
+	}                                                                    \
+	static inline void map_free_##name(name* m) {                        \
+		vec_free___##name##_KEY_VEC(&m->keys);                           \
+		vec_free___##name##_VALUE_VEC(&m->values);                       \
+	}                                                                    \
+	static inline void map_init_##name(name* m) {                        \
+		vec_init___##name##_KEY_VEC(&m->keys);                           \
+		vec_init___##name##_VALUE_VEC(&m->values);                       \
+	}
+
+#endif
