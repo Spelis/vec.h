@@ -30,10 +30,10 @@ No compilation or linking needed; it is completely inline.
 
 1. Define a vector type
 ```c
-NEW_VEC_TYPE(int, IntVec) // Defines a vector of ints named IntVec
-NEW_VEC_TYPE(int, IntVec) // Defines a vector of floats
-NEW_VEC_TYPE(int, IntVec) // Defines a vector of strings (char*) (needs to individually free each element before freeing the entire vector)
-NEW_VEC_TYPE(TYPE, NAME) // Defines a vector of TYPE named NAME
+NEW_VEC_TYPE(int, IntVec, 16) // Defines a vector of ints named IntVec
+NEW_VEC_TYPE(int, IntVec, 16) // Defines a vector of floats
+NEW_VEC_TYPE(int, IntVec, 8) // Defines a vector of strings (char*) (needs to individually free each element before freeing the entire vector)
+NEW_VEC_TYPE(TYPE, NAME, MIN_CAP) // Defines a vector of TYPE named NAME with minimum capacity MIN_CAP
 ```
 The first parameter is the element type, the second is the vector name.
 
@@ -64,7 +64,8 @@ int last = vec_back_IntVec(&ivec);      // Returns the last element
 ---
 6. Delete elements
 ```c
-vec_delete_IntVec(&ivec, 0); // Deletes the element at index 0 (unordered: swaps with last element)
+vec_delete_IntVec(&ivec, 0); // Deletes the element at index 0 (preserves order)
+vec_udelete_IntVec(&ivec, 1); // Deletes the element at index 1 (O(1), unordered)
 ```
 > Note: When deleting the last element will be moved into the position of 
 ---
@@ -78,6 +79,7 @@ unsigned int exists = vec_contains_IntVec(&ivec, 42); // Returns 1 if element ex
 ```c
 size_t sz = vec_size_IntVec(&ivec);       // Number of elements
 size_t cap = vec_capacity_IntVec(&ivec);  // Current allocated capacity
+size_t min_cap = vec_minimum_capacity_IntVec(&ivec);  // Minimum allowed allocated capacity
 ```
 > Note: these just return `&ivec->size` and `&ivec->capacity` respectively.
 ---

@@ -4,9 +4,10 @@
 
 #include "vec.h"
 
-NEW_VEC_TYPE(int, IntVec)
-NEW_VEC_TYPE(float, FloatVec)
-NEW_VEC_TYPE(char*, StringVec)
+NEW_VEC_TYPE(int, IntVec, 16)
+NEW_VEC_TYPE(float, FloatVec, 16)
+NEW_VEC_TYPE(char*, StringVec,
+			 0)	 // works even with a zero value. gets set to 1 internally.
 
 int main(void) {
 	// --- Integers ---
